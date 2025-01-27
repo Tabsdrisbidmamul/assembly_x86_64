@@ -1,0 +1,36 @@
+     1                                  section .data
+     2 00000000 7B                        bNum  db  123
+     3 00000001 3930                      wNum  dw  12345
+     4 00000003 D2029649                  dNum  dd  1234567890
+     5 00000007 1581E97DF4102211          qNum1 dq  1234567890123456789
+     6 0000000F 40E2010000000000          qNum2 dq  123456
+     7 00000017 1F85EB51B81E0940          qNum3 dq  3.14
+     8                                  section .bss
+     9                                  section .text
+    10                                    global main
+    11                                  main:
+    12 00000000 55                        push  rbp
+    13 00000001 4889E5                    mov   rbp, rsp
+    14 00000004 48C7C0FFFFFFFF            mov   rax, -1 ; fill rax with 1s
+    15 0000000B 8A0425[00000000]          mov   al, byte [bNum] ; copy the contents of bNum (byte) long into the lower part of ax (16 bit) reg. But upper contents ah, eax, and rax are still set
+    16 00000012 4831C0                    xor   rax, rax  ; clear rax reg
+    17 00000015 8A0425[00000000]          mov   al, byte [bNum] ; now only the lower part of ax is set
+    18                                  
+    19 0000001C 48C7C0FFFFFFFF            mov   rax, -1 ; fill rax with 1s
+    20 00000023 668B0425[01000000]        mov   ax, word [wNum] ; copy the contents of wNum (word) long into ax (16 bit) reg. But upper contents eax, and rax are still set
+    21 0000002B 4831C0                    xor   rax, rax  ; clear rax reg
+    22 0000002E 668B0425[01000000]        mov   ax, word [wNum] ; now only ax is set
+    23                                  
+    24 00000036 48C7C0FFFFFFFF            mov   rax, -1 ; fil with 1s
+    25 0000003D 8B0425[03000000]          mov   eax, dword [dNum] ; does clear upper bits of rax (I imagine that mov rax, -1 only sets the 1 up to eax (32 bit) and the other 32 bits are not touched i.e still 0)
+    26                                  
+    27 00000044 48C7C0FFFFFFFF            mov   rax, -1 ; fill with 1s
+    28 0000004B 488B0425[07000000]        mov   rax, qword [qNum1] ; does clear upper bits of rax
+    29 00000053 48890425[0F000000]        mov   qword [qNum2], rax ; copy contents of rax to qNum2's memory location
+    30 0000005B B840E20100                mov   rax, 123456
+    31 00000060 F30F7E0425-               movq  xmm0, [qNum3] ; instruction for floating point
+    31 00000065 [17000000]         
+    32                                  
+    33 00000069 4889EC                    mov   rsp, rbp
+    34 0000006C 5D                        pop   rbp
+    35 0000006D C3                        ret
