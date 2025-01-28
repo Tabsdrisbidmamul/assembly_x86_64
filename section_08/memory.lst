@@ -1,0 +1,50 @@
+     1                                  section .data
+     2 00000000 7B                          bNum    db  123
+     3 00000001 3930                        wNum    dw  12345
+     4 00000003 0000<rep 5h>                warray  times   5 dw 0  ; array of 5 words initialised to 0
+     5 0000000D 39300000                    dNum    dd  12345
+     6 00000011 3930000000000000            qNum1   dq  12345
+     7 00000019 61626300                    text1   db  "abc", 0
+     8 0000001D 50455254FB210940            qNum2   dq  3.141592654
+     9 00000025 63646500                    text2   db  "cde", 0
+    10                                      
+    11                                  section .bss
+    12 00000000 ??                          bvar    resb    1
+    13 00000001 <res 14h>                   wvar    resw    10
+    14 00000015 ????????                    dvar    resd    1
+    15 00000019 <res 249F00h>               qvar    resq    300000
+    16                                  section .text
+    17                                      global main
+    18                                  main:
+    19 00000000 55                          push    rbp
+    20 00000001 4889E5                      mov     rbp, rsp
+    21 00000004 488D0425[00000000]          lea     rax, [bNum] ; lea (load effective address) lea treats the square brackets (which is deref) differently. It will calculate the address of bNum and store the pointer in the first operand (so rax)
+    22 0000000C 48B8-                       mov     rax, bNum   ; load address of bNum (in ddd/ gdb stack the values are apparent)
+    22 0000000E [0000000000000000] 
+    23 00000016 488B0425[00000000]          mov     rax, [bNum] ; load the value of bNum (123) in to rax
+    24                                      ;mov     [bvar], rax ; copy rax value to address of bvar (so replacing bvar value at memory address)
+    25 0000001E 880425[00000000]            mov     [bvar], al ; the above line will load all 8 bytes of rax to bvar. Problem is that 123 are in al (the lower 8 bytes), so moving the other 7 bytes and reading all 8 bytes will not give us 123 (which bNum is). Of course clearing rax (xor rax, rax) before and then moving bNum to rax and loading rax to bvar will also work 
+    26                                      
+    27                                      
+    28 00000025 488D0425[00000000]          lea     rax, [bvar]
+    29 0000002D 488D0425[01000000]          lea     rax, [wNum]
+    30 00000035 488B0425[01000000]          mov     rax, [wNum]
+    31 0000003D 488D0425[19000000]          lea     rax, [text1]
+    32                                      
+    33 00000045 48B8-                       mov     rax, text1 ; load in first char address of text1
+    33 00000047 [1900000000000000] 
+    34 0000004F 48B8-                       mov     rax, text1 + 1 ; load in second char address of text1
+    34 00000051 [1A00000000000000] 
+    35 00000059 488D0425[1A000000]          lea     rax, [text1 + 1] ; load in second char address of text1
+    36 00000061 488B0425[19000000]          mov     rax, [text1] ; load starting char of text1
+    37 00000069 488B0425[1A000000]          mov     rax, [text1 + 1] ; load in second char
+    38                                      
+    39 00000071 4889EC                      mov rsp, rbp
+    40 00000074 5D                          pop rbp
+    41 00000075 C3                          ret
+    42                                      
+    43                                      
+    44                                      
+    45                                  
+    46                                      
+    47                                      
