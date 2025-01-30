@@ -5,3 +5,6 @@
 - section 06: verifying bit manipulation and overflow
 - section 07: jump and sasm setup
 - section 08: exploring memory
+- section 10: the stack
+- section 11: floating point arithmetic
+- section 12: functions
