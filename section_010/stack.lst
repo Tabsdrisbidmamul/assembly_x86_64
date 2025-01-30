@@ -1,0 +1,66 @@
+     1                                  extern printf
+     2                                  section .data
+     3 00000000 414243444500              strng     db  "ABCDE", 0
+     4                                    strngLen  equ $ - strng - 1
+     5 00000006 546865206F72696769-       fmt1      db  "The original string %s", 10, 0
+     5 0000000F 6E616C20737472696E-
+     5 00000018 672025730A00       
+     6 0000001E 546865207265766572-       fmt2      db  "The reversed string %s", 10, 0
+     6 00000027 73656420737472696E-
+     6 00000030 672025730A00       
+     7                                  section .bss
+     8                                  section .text
+     9                                    global main
+    10                                  main:
+    11 00000000 55                        push  rbp
+    12 00000001 4889E5                    mov   rbp, rsp
+    13                                  
+    14                                  ; print original string
+    15 00000004 48BF-                     mov   rdi, fmt1
+    15 00000006 [0600000000000000] 
+    16 0000000E 48BE-                     mov   rsi, strng
+    16 00000010 [0000000000000000] 
+    17 00000018 B800000000                mov   rax, 0
+    18 0000001D E8(00000000)              call  printf
+    19                                  
+    20                                  ; push the string char per char on the stack
+    21 00000022 4831C0                    xor   rax, rax
+    22 00000025 48BB-                     mov   rbx, strng ; so pointer of strng in rbx
+    22 00000027 [0000000000000000] 
+    23 0000002F B905000000                mov   rcx, strngLen ; length of strng (this will decrement when looped)
+    24 00000034 41BC00000000              mov   r12, 0 ; r12 as loop pointer
+    25                                    pushLoop:
+    26 0000003A 428A0423                    mov   al, byte [rbx + r12] ; move char into al (rbx contains the address to the first char in strng so by adding the loop pointer, we will move along the string)
+    27 0000003E 50                          push  rax
+    28 0000003F 49FFC4                      inc   r12
+    29 00000042 E2F6                        loop  pushLoop
+    30                                  
+    31                                  ; pop the string char per char from stack, this will reverse strng
+    32 00000044 48BB-                     mov   rbx, strng
+    32 00000046 [0000000000000000] 
+    33 0000004E B905000000                mov   rcx, strngLen
+    34 00000053 41BC00000000              mov   r12, 0
+    35                                    popLoop:
+    36 00000059 58                          pop   rax ; this will pop from stack and place into rax
+    37 0000005A 42880423                    mov   byte [rbx + r12], al ; place the string and replace the index pos at strng (so last char at first char and so on)
+    38 0000005E 49FFC4                      inc   r12
+    39 00000061 E2F6                        loop  popLoop
+    40 00000063 42C6042300                  mov   byte [rbx + r12], 0 ; null terminate strng
+    41                                  
+    42                                  ; print reversed string
+    43 00000068 48BF-                     mov   rdi, fmt2
+    43 0000006A [1E00000000000000] 
+    44 00000072 48BE-                     mov   rsi, strng
+    44 00000074 [0000000000000000] 
+    45 0000007C B800000000                mov   rax, 0
+    46 00000081 E8(00000000)              call printf
+    47                                  
+    48 00000086 4889EC                    mov rsp, rbp
+    49 00000089 5D                        pop rbp
+    50 0000008A C3                        ret
+    51                                  
+    52                                  
+    53                                  
+    54                                  
+    55                                  
+    56                                  
