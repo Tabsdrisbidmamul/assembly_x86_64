@@ -8,3 +8,5 @@
 - section 10: the stack
 - section 11: floating point arithmetic
 - section 12: functions
+- section 13: stack alignment
+- section 14: external functions
