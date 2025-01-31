@@ -1,3 +1,11 @@
+; callee saved registers (non volatile) are registers that the caller function (so main e.g) must save so that they are preserved across function calls.
+; we push rbp at the very beginning, and rbp is used in lfunc
+; e.g. rax and xmm0 are commonly used as return values, hence they need to be saved before calling a function, or all calculations completed before calling said function.
+
+; caller saved registers (volatile) are registers that the callee function must save, once saved it can use said register without having to worry about modifying the caller function's register
+; We pushed rbx to use in our local function (in lfunc), and pop when we exit it to return rbx to its original state
+; e.g. rbp, rbx 
+
 extern printf
 section .data
   first   db  "A", 0
