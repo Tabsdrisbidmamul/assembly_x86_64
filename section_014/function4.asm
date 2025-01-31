@@ -39,7 +39,7 @@ mov   rbp, rsp
       mov   rax, 1
       call  printf
 ; retangle area
-      mov   rdi, [side1] ; rdi and rsi are used as params, rdx, and r0-15 are used as the next params
+      mov   rdi, [side1] ; rdi and rsi are used as params, rdx, rcx, and r8-9 are used as the next params. For more than 6, the stack is used and pushed onto the stack reverse order -> 10, 9, 8, 7. and when popping, param 7 is fetched, then 8, and so.
       mov   rsi, [side2]
       call  r_area ; area returned in rax
 
